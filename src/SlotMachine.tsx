@@ -14,6 +14,7 @@ const canvasHeight = 510;
 const imageHeight = 170;
 const imageWidth = 170;
 const speed = 20;
+const lines = 3;
 
 interface ISlotImage {
 	id: number;
@@ -34,11 +35,33 @@ const slotsImages: ISlotImage[] = [
 	{id: 9, image: image9}
 ];
 
-const realData = [
-	[1, 7, 5],
-	[1, 5, 1],
-	[5, 7, 5]
+const RD = [
+	[2, 1, 2],
+	[1, 2, 1],
+	[2, 1, 2]
 ]
+
+function transposeRealData(data:any) {
+	const rows = data.length;
+	const cols = data[0].length;
+	const transposed = Array.from({ length: cols }, () => Array(rows).fill(null));
+	for (let i = 0; i < rows; i++) {
+		for (let j = 0; j < cols; j++) {
+			transposed[j][i] = data[i][j];
+		}
+	}
+	return transposed;
+}
+
+
+const realData = transposeRealData(RD);
+
+interface IRealDataSlots {
+	line1: ISlotImage[],
+	line2: ISlotImage[],
+	line3: ISlotImage[],
+}
+
 
 const getRealLine = (ids: number[]): (ISlotImage)[] => {
 	return ids.reduce<(ISlotImage)[]>((realSockets, id) => {
@@ -46,12 +69,6 @@ const getRealLine = (ids: number[]): (ISlotImage)[] => {
 		if (image) realSockets.push(image);
 		return realSockets;
 	}, []);
-}
-
-interface IWinScheme {
-	x: number[],
-	y: number[],
-	xy: number[]
 }
 
 const checkWinCombinations = (data: Array<Array<number>>): IWinScheme | null => {
@@ -78,21 +95,49 @@ const checkWinCombinations = (data: Array<Array<number>>): IWinScheme | null => 
 	return Object.keys(winScheme).length ? winScheme : null;
 }
 
-checkWinCombinations(realData);
+
+const getRealLines = (ids: number[][], ): IRealDataSlots => {
+	const combinations = checkWinCombinations(ids);
+	const dataSlots: {} = {}
+	for (let x = 0; x < ids.length; x++) {
+		for (let y = 0; y < ids[x].length; y++) {
+			const image = {...slotsImages.find(slot => slot.id === ids[x][y])};
+			if(image) {
+				if (combinations?.x.includes(x)) image.winField = true;
+				if (combinations?.y.includes(y)) image.winField = true;
+				const xyCross1 = x === y && combinations?.xy.includes(0);
+				const xyCross2 = x === (ids.length - 1) - y && combinations?.xy.includes(2)
+				if (xyCross1 || xyCross2) image.winField = true;
+			}
+
+			console.log(combinations);
+			// @ts-ignore
+			if(dataSlots[`line${x+1}`]) dataSlots[`line${x+1}`].push(image)
+			else { // @ts-ignore
+				dataSlots[`line${x+1}`] = [image]
+			}
+		}
+	}
+	return dataSlots as IRealDataSlots;
+}
+
+interface IWinScheme {
+	x: number[],
+	y: number[],
+	xy: number[]
+}
 
 const randomRealData = (length: number, maxId: number = 8) => {
 	const randomData = [];
 	for (let i = 0; i < length; i++) {
 		randomData.push(Math.floor(Math.random() * maxId + 1));
 	}
-	// console.log(randomData);
 	return randomData;
 }
 
 interface ILine {
 	slots: ISlotImage[],
 	realData: ISlotImage[],
-	winCombinations?: IWinScheme | null,
 	running: boolean,
 	xPos: number,
 	yPos: number
@@ -103,6 +148,8 @@ interface ISlotMachine {
 	line2: ILine,
 	line3: ILine
 }
+
+
 
 const randomOutOfScreen = (imagesArr: ISlotImage[], randomFrom: number = 0, randomTo: number = 0): ISlotImage[] => {
 	const shuffledArr = [...imagesArr];
@@ -115,29 +162,6 @@ const randomOutOfScreen = (imagesArr: ISlotImage[], randomFrom: number = 0, rand
 	return [...shuffledArr];
 }
 
-const initMachine: ISlotMachine = {
-	line1: {
-		slots: randomOutOfScreen(slotsImages),
-		realData: getRealLine(randomRealData(3)),
-		running: false,
-		xPos: 0,
-		yPos: 0
-	},
-	line2: {
-		slots: randomOutOfScreen(slotsImages),
-		realData: getRealLine(randomRealData(3)),
-		running: false,
-		xPos: imageWidth,
-		yPos: 0
-	},
-	line3: {
-		slots: randomOutOfScreen(slotsImages),
-		realData: getRealLine(randomRealData(3)),
-		running: false,
-		xPos: imageWidth * 2,
-		yPos: 0
-	}
-}
 
 const calcVerticalPosition = (line: ILine) => {
 	const {yPos, running, slots, realData} = line
@@ -147,6 +171,23 @@ const calcVerticalPosition = (line: ILine) => {
 		return imageHeight * realData.length
 	}
 	return yPos - speed;
+}
+
+const initLine = {
+	slots: randomOutOfScreen(slotsImages),
+	realData: getRealLine(randomRealData(3)),
+	running: false,
+	xPos: 0,
+	yPos: 0
+}
+type SlotMachineType = ILine[]
+
+const initMachine = (lines: number):SlotMachineType => {
+	const machine = []
+	for (let i = 0; i < lines; i++){
+		machine.push({...initLine, xPos: i * imageWidth});
+	}
+	return machine;
 }
 
 interface LineRendererProps {
@@ -163,7 +204,7 @@ const LineRenderer: React.FC<LineRendererProps> = ({line}) => {
 					key={`line1-${slot.id}-${i}`}
 					image={slot.image}
 					anchor={0.5}
-					scale={slot.scale || 1}
+					scale={slot.winField ? .8 : 1}
 					x={xPos + imageWidth / 2 + 10}
 					y={i * imageHeight - yPos - (slots.length * imageHeight) + imageHeight / 2}
 				/>
@@ -172,54 +213,97 @@ const LineRenderer: React.FC<LineRendererProps> = ({line}) => {
 	);
 };
 
-const startGame = async (setMachine: React.Dispatch<React.SetStateAction<ISlotMachine>>) => {
+const runController1 = (lines: number) => {
+	let status = -1;
+	return (machine: SlotMachineType) => {
+		if (status === -1) {
+			console.log(status);
+			const setAllRun = machine.map((slot: ILine) => ({
+				...slot,
+				running: true,
+				slots: randomOutOfScreen(slotsImages)
+			}))
+			status += 1;
+			return setAllRun;
+		} else {
+			const setAllRun = machine.map((slot: ILine, i) => {
+				return ({
+					...slot,
+					running: status === i ? false : slot.running,
+					slots: randomOutOfScreen(slotsImages)
+				})
+			})
+			status += 1;
+			return setAllRun;
+		}
+		return machine;
+	}
+}
+
+const runController = (machine: SlotMachineType, lineIndex?: number) => {
+	if (lineIndex !== undefined) {
+		return machine.map((slot, i) => ({
+			...slot,
+			running: lineIndex === i ? false : slot.running,
+			slots: randomOutOfScreen(slotsImages)
+		}))
+	} else return machine.map((slot: ILine) => ({
+		...slot,
+		running: true,
+		slots: randomOutOfScreen(slotsImages)
+	}))
+}
+
+const startGame = async (machine: SlotMachineType, setMachine: React.Dispatch<React.SetStateAction<SlotMachineType>>) => {
 	const rollingWait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-	setMachine((prev) => ({
-		line1: {...prev.line1, running: true, slots: randomOutOfScreen(slotsImages)},
-		line2: {...prev.line2, running: true, slots: randomOutOfScreen(slotsImages)},
-		line3: {...prev.line3, running: true, slots: randomOutOfScreen(slotsImages)}
-	}));
+	setMachine(prev => runController(prev));
 	await rollingWait(1000);
-	setMachine((prev) => ({
-		...prev,
-		line1: {...prev.line1, realData: getRealLine(randomRealData(3))},
-		line2: {...prev.line2, realData: getRealLine(randomRealData(3))},
-		line3: {...prev.line3, realData: getRealLine(randomRealData(3))},
-	}));
+	const trueSlots = getRealLines(realData)
+	// const trueSlots = getRealLines([[...randomRealData(3)],[...randomRealData(3)],[...randomRealData(3)]])
+
+	setMachine((prev) => ([
+		{...prev[0], realData: [...trueSlots.line1]},
+		{...prev[1], realData: [...trueSlots.line2]},
+		{...prev[2], realData: [...trueSlots.line3]},
+	]));
 	await rollingWait(Math.random() * 3000 + 1000);
-	setMachine((prev) => ({...prev, line1: {...prev.line1, running: false}}));
+	setMachine(prev => runController(prev, 0));
 	await rollingWait(2000);
-	setMachine((prev) => ({...prev, line2: {...prev.line2, running: false}}));
+	setMachine(prev => runController(prev, 1));
 	await rollingWait(2000);
-	setMachine((prev) => ({...prev, line3: {...prev.line3, running: false}}));
+	setMachine(prev => runController(prev, 2));
+
 };
 
 const SlotMachine: React.FC = () => {
-	const [machine, setMachine] = useState<ISlotMachine>(initMachine);
+	const [machine, setMachine] = useState<SlotMachineType>(initMachine(3));
 
 	useEffect(() => {
 		const interval = setInterval(() => {
-			setMachine((prev: ISlotMachine) => {
-				let updatedMachine = {...prev};
-				for (let key in updatedMachine) {
-					let line = updatedMachine[key as keyof ISlotMachine];
-					line = {...line, yPos: calcVerticalPosition(line)}
-					updatedMachine = {...updatedMachine, [key]: line}
-				}
-				return updatedMachine
+			setMachine((prev: SlotMachineType) => {
+				let updatedMachine = [...prev];
+				return  updatedMachine.map(slot => {
+					return {...slot, yPos: calcVerticalPosition(slot)}
+				})
+				// for (let key in updatedMachine) {
+				// 	let line = updatedMachine[key as keyof ISlotMachine];
+				// 	line = {...line, yPos: calcVerticalPosition(line)}
+				// 	updatedMachine = {...updatedMachine, [key]: line}
+				// }
+				// return updatedMachine
 			})
 		}, 16);
 		return () => clearInterval(interval);
-	}, [machine.line1.yPos, machine.line1.slots.length, machine.line1.running, machine.line1.realData]);
+	}, []);
 
 	return (<>
-		<button onClick={() => startGame(setMachine)}
-		        disabled={machine.line3.running}>{machine.line3.running ? "Wait" : "Start"}</button>
+		<button onClick={() => startGame(machine, setMachine)}
+		        disabled={machine[2].running}>{machine[2].running ? "Wait" : "Start"}</button>
 		<Stage width={528} height={canvasHeight} options={{backgroundColor: 0xeef1f5}}>
-			<LineRenderer line={machine.line1}/>
-			<LineRenderer line={machine.line2}/>
-			<LineRenderer line={machine.line3}/>
+			<LineRenderer line={machine[0]}/>
+			<LineRenderer line={machine[1]}/>
+			<LineRenderer line={machine[2]}/>
 		</Stage>
 
 	</>)
