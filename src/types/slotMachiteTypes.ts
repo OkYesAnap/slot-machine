@@ -25,3 +25,12 @@ export interface ILine {
 }
 
 export type SlotMachineType = ILine[]
+
+
+export interface iRollData {
+	uid: number,
+	balance: number,
+	last_bet: number,
+	bets: number[],
+	rolls: number[][]
+}

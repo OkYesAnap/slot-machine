@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 
 import {Sprite, Stage} from "@pixi/react";
 import {
@@ -11,16 +11,42 @@ import {
 } from "../../constatns/slotMachineConstansts";
 import {initMachine} from "../../utils/initDataUtils";
 import LineRenderer from "./LineRenderer";
-import {useSlotMachineGame} from "../../hooks/useSlotMachineGame";
+import {fetchData, useSlotMachineGame} from "../../hooks/useSlotMachineGame";
 import BACKGROUND_IMAGE from "../../assets/background.png"
 import WinText from "./WinText";
 import BetController from "./BetController";
+import {transposeRealData} from "../../utils/realLIneUtils";
+import {IRollData} from "../../api/mock";
 
 const SlotMachine: React.FC = () => {
+	const [runGame, setRunGame] = useState<boolean>(false);
 	const [machine, setMachine] = useState<SlotMachineType>(initMachine(LINES));
-	const {startGame, hasWin} = useSlotMachineGame(machine, setMachine);
-	const gameStopped = machine[machine.length - 1].completelyStopped;
 
+	const [betController, setBetController] = useState<IRollData>({
+		uid: 100,
+		balance: 1000,
+		last_bet: 10,
+		bets: [10, 20, 50, 100],
+		rolls: []
+	});
+
+	const [realData, setRealData] = useState<number[][]>([]);
+	const {startGame, hasWin} = useSlotMachineGame(machine, setMachine, realData);
+	const gameStopped = useMemo(() => machine[machine.length - 1].completelyStopped, [machine])
+
+	useEffect(() => {
+		if(runGame) {
+			const func = async () => {
+				const data = await fetchData(100);
+				setBetController(data);
+				const transformedData = transposeRealData(data.rolls);
+				await setRealData([...transformedData]);
+				await startGame();
+			}
+			func()
+			setRunGame(false);
+		}
+	}, [runGame, startGame])
 
 
 	return (<>
@@ -34,7 +60,7 @@ const SlotMachine: React.FC = () => {
 			{machine.map(slot => <LineRenderer line={slot} completelyStopped={gameStopped}/>)}
 			<WinText showWinText={gameStopped && hasWin}/>
 		</Stage>
-		<BetController startGame={startGame}/>
+		<BetController startGame={()=>setRunGame(true)} betController={betController}/>
 	</>)
 };
 

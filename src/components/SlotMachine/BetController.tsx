@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { Button, InputNumber, Card } from 'antd';
 import {CANVAS_WIDTH} from "../../constatns/slotMachineConstansts";
+import {IRollData} from "../../api/mock";
 
 const initialBalance = 1000
 
-//@ts-ignore
-const BetController = ({startGame}) => {
+interface IBetControllerProps {
+	startGame: () => void;
+	betController?: IRollData
+}
+
+const BetController: React.FC<IBetControllerProps> = ({startGame, betController}) => {
 	const [bet, setBet] = useState(10);
 
 	const incrementBet = () => {
@@ -23,7 +28,7 @@ const BetController = ({startGame}) => {
 	return (
 		<Card style={{ width: CANVAS_WIDTH, margin: '20px auto', textAlign: 'center' }}>
 			<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-				<p>Your balance: {initialBalance} coins</p>
+				<p>Your balance: {betController?.balance} coins</p>
 				<Button onClick={decrementBet} disabled={bet <= 10}>
 					-
 				</Button>

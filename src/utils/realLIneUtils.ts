@@ -74,3 +74,9 @@ export const transposeRealData = (data: number[][]) => {
 }
 
 export const hasWinCombinations = (winCombinations:IWinScheme | null): boolean => Object.values(winCombinations || {}).some(array => array.length > 0);
+
+export const totalWinCombinations = (winCombinations:IWinScheme | null): number => {
+	return Object.values(winCombinations || {}).reduce((accumulator, currentArray) => {
+		return accumulator + currentArray.length;
+	}, 0);
+}

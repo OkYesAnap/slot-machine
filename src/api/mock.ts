@@ -1,3 +1,5 @@
+import {checkRealDataWinCombinations, totalWinCombinations} from "../utils/realLIneUtils";
+
 const slotMachineArray = [
 	[
 		[8, 3, 9],
@@ -10,9 +12,9 @@ const slotMachineArray = [
 		[8, 1, 2]
 	],
 	[
-		[9, 1, 2],
-		[3, 3, 3],
-		[6, 7, 8]
+		[9, 1, 7],
+		[3, 3, 7],
+		[6, 7, 7]
 	],
 	[
 		[5, 5, 2],
@@ -20,9 +22,9 @@ const slotMachineArray = [
 		[7, 8, 6]
 	],
 	[
-		[4, 4, 4],
-		[2, 3, 7],
-		[8, 9, 1]
+		[6, 4, 6],
+		[2, 6, 7],
+		[6, 9, 6]
 	],
 	[
 		[6, 2, 2],
@@ -50,21 +52,34 @@ const slotMachineArray = [
 		[2, 6, 4]
 	]
 ];
+
+export interface IRollData {
+	uid: number,
+	balance: number,
+	last_bet: number,
+	bets: number[],
+	rolls: number[][]
+}
+
 export const rollData = () => {
 	let i = 0;
-	const data = {
+	let data:IRollData = {
 		uid: 100,
-		balance: 970,
+		balance: 1000,
 		last_bet: 10,
 		bets: [10, 20, 50, 100],
-		rolls: slotMachineArray
+		rolls: slotMachineArray[0]
 	}
 
-	return () => {
-		const rolls = data.rolls[i];
+	return (bet: number): IRollData => {
+		const rolls = slotMachineArray[i];
+		const combinations = checkRealDataWinCombinations(rolls)
+		const totalCombinations = totalWinCombinations(combinations);
+		const balance = data.balance - bet + totalCombinations * 5 * bet ;
 		i++;
-		if (i === data.rolls.length - 1) i = 0;
-		return {...data, rolls}
+		if (i === slotMachineArray.length - 1) i = 0;
+		data = {...data, rolls: [...rolls], balance}
+		return data
 	}
 }
 
