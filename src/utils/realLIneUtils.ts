@@ -34,8 +34,7 @@ export const checkRealDataWinCombinations = (data: Array<Array<number>>): IWinSc
 }
 
 
-export const getRealLines = (ids: number[][], slotsImages: ISlotImage[]): RealDataSlotsType => {
-	const combinations = checkRealDataWinCombinations(ids);
+export const getRealLines = (ids: number[][], slotsImages: ISlotImage[], combinations:IWinScheme | null): RealDataSlotsType => {
 	const dataSlots: RealDataSlotsType = []
 	for (let x = 0; x < ids.length; x++) {
 		dataSlots.push([])
@@ -73,3 +72,5 @@ export const transposeRealData = (data: number[][]) => {
 	}
 	return transposed;
 }
+
+export const hasWinCombinations = (winCombinations:IWinScheme | null): boolean => Object.values(winCombinations || {}).some(array => array.length > 0);

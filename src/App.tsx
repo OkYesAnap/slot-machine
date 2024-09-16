@@ -5,10 +5,7 @@ import SlotMachine from "./components/SlotMachine/SlotMachine";
 function App() {
 	return (
 		<div className="App">
-			<header className="App-header">
-				<h1>Palay Game</h1>
-				<SlotMachine/>
-			</header>
+			<SlotMachine/>
 		</div>
 	);
 }

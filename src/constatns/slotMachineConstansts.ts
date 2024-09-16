@@ -21,10 +21,17 @@ export const SLOTS_IMAGES: ISlotImage[] = [
 	{id: 9, image: image9}
 ];
 
-export const CANVAS_HEIGHT = 510;
+export const CANVAS_HEIGHT = 600;
 export const CANVAS_WIDTH = 530;
-export const IMAGE_HEIGHT = 170;
+export const IMAGE_HEIGHT = 200;
 export const IMAGE_WIDTH = 170;
 export const ROLLING_SPEED = 25;
 export const ROLLING_WAIT_DELAY = 1500;
 export const LINES = 3;
+export const WIN_ANIMATION_PARAMS = {
+	scale: 0.9,
+	step: 0.01,
+	increase: true,
+	upLimit: 1,
+	downLimit: 0.8
+}

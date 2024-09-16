@@ -19,13 +19,9 @@ export interface ILine {
 	slots: ISlotImage[],
 	realData: ISlotImage[],
 	running: boolean,
+	completelyStopped: boolean,
 	xPos: number,
 	yPos: number
 }
 
 export type SlotMachineType = ILine[]
-
-
-export interface LineRendererProps {
-	line: ILine;
-}

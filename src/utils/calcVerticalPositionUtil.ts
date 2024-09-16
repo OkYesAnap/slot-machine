@@ -1,12 +1,13 @@
 import {ILine} from "../types/slotMachiteTypes";
 import {IMAGE_HEIGHT, ROLLING_SPEED} from "../constatns/slotMachineConstansts";
 
-export const calcVerticalPosition = (line: ILine) => {
+export const calcVerticalPosition = (line: ILine): { yPos: number, completelyStopped: boolean } => {
 	const {yPos, running, slots, realData} = line
+	let newStatus = {yPos, completelyStopped: false}
 	if (yPos <= -IMAGE_HEIGHT * (slots.length)) {
-		return -ROLLING_SPEED + (IMAGE_HEIGHT * realData.length);
+		return {...newStatus, yPos: -ROLLING_SPEED + (IMAGE_HEIGHT * realData.length)};
 	} else if (!running && Math.ceil(yPos / IMAGE_HEIGHT) === realData.length) {
-		return IMAGE_HEIGHT * realData.length
+		return {yPos: IMAGE_HEIGHT * realData.length, completelyStopped: true}
 	}
-	return yPos - ROLLING_SPEED;
+	return {...newStatus, yPos: yPos - ROLLING_SPEED};
 }
