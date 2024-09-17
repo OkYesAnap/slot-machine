@@ -1,4 +1,4 @@
-import {iRollData, SlotMachineType} from "../types/slotMachiteTypes";
+import {IRollData, SlotMachineType} from "../types/slotMachiteTypes";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {ROLLING_WAIT_DELAY, SLOTS_IMAGES} from "../constatns/slotMachineConstansts";
 import {
@@ -12,7 +12,7 @@ import {calcVerticalPosition} from "../utils/calcVerticalPositionUtil";
 import {dataClosure} from "../api/mock";
 
 export const fetchData = (bet:number) => {
-	return new Promise<iRollData>((resolve, reject) => {
+	return new Promise<IRollData>((resolve, reject) => {
 		try {
 			const data = dataClosure(bet);
 			resolve(data);
@@ -55,7 +55,6 @@ export const useSlotMachineGame = (machine: SlotMachineType,
 	}, [trueSlots, setMachine])
 
 	const startGame = useCallback(async () => {
-
 		setMachine(prev => rollingLinesUpdater(prev, SLOTS_IMAGES));
 		await rollingWait(Math.random() * ROLLING_WAIT_DELAY + ROLLING_WAIT_DELAY);
 

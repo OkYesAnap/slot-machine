@@ -20,7 +20,7 @@ export const SLOTS_IMAGES: ISlotImage[] = [
 	{id: 8, image: image8},
 	{id: 9, image: image9}
 ];
-
+export const WIN_MULTIPLIER = 5
 export const CANVAS_HEIGHT = 600;
 export const CANVAS_WIDTH = 530;
 export const IMAGE_HEIGHT = 200;

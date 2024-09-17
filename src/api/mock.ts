@@ -1,8 +1,10 @@
 import {checkRealDataWinCombinations, totalWinCombinations} from "../utils/realLIneUtils";
+import {WIN_MULTIPLIER} from "../constatns/slotMachineConstansts";
+import {IRollData} from "../types/slotMachiteTypes";
 
 const slotMachineArray = [
 	[
-		[8, 3, 9],
+		[8, 3, 1],
 		[9, 9, 4],
 		[9, 6, 3]
 	],
@@ -53,32 +55,49 @@ const slotMachineArray = [
 	]
 ];
 
-export interface IRollData {
-	uid: number,
-	balance: number,
-	last_bet: number,
-	bets: number[],
-	rolls: number[][]
+export const defaultData: IRollData = {
+	uid: 100,
+	balance: 1000,
+	last_bet: 10,
+	winLines: 0,
+	bets: [10, 20, 50, 100],
+	win: 0,
+	rolls: []
 }
 
 export const rollData = () => {
-	let i = 0;
-	let data:IRollData = {
-		uid: 100,
-		balance: 1000,
-		last_bet: 10,
-		bets: [10, 20, 50, 100],
-		rolls: slotMachineArray[0]
+	const user = localStorage.getItem('uid-100')
+	let data: IRollData;
+	if (user) {
+		data = JSON.parse(user);
+	} else {
+		data = {...defaultData};
 	}
+	let i = 0;
 
 	return (bet: number): IRollData => {
-		const rolls = slotMachineArray[i];
+		if (data.balance <= 0) return data;
+		let rolls;
+		if (i === 0) {
+			rolls = data.rolls
+		} else {
+			rolls = slotMachineArray[i];
+		}
 		const combinations = checkRealDataWinCombinations(rolls)
 		const totalCombinations = totalWinCombinations(combinations);
-		const balance = data.balance - bet + totalCombinations * 5 * bet ;
+		const win = totalCombinations * WIN_MULTIPLIER * bet
+		let balance = data.balance - bet + win;
 		i++;
 		if (i === slotMachineArray.length - 1) i = 0;
-		data = {...data, rolls: [...rolls], balance}
+		data = {
+			...data,
+			rolls: [...rolls],
+			last_bet: bet,
+			winLines: totalCombinations,
+			win,
+			balance
+		}
+		localStorage.setItem(`uid-${data.uid}`, JSON.stringify(data));
 		return data
 	}
 }

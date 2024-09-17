@@ -12,15 +12,21 @@ const style = new TextStyle({
 });
 
 
-const WinText: React.FC<{ showWinText: boolean }> = ({showWinText}) => {
+const WinText: React.FC<{ showWinText: boolean, showGameOver: boolean }> = ({showWinText, showGameOver}) => {
 	return (<>{showWinText && <Text
 		text="You WIN!"
 		anchor={0.5}
 		x={CANVAS_WIDTH / 2}
 		y={CANVAS_HEIGHT / 2}
 		style={style}
-	/>
-	}</>)
+	/>}
+	{showGameOver && <Text
+		text="GAME OVER!"
+		anchor={0.5}
+		x={CANVAS_WIDTH / 2}
+		y={CANVAS_HEIGHT / 2}
+		style={style}/>}
+	</>)
 }
 
 export default WinText
