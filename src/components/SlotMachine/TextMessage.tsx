@@ -12,7 +12,7 @@ const style = new TextStyle({
 });
 
 
-const WinText: React.FC<{ showWinText: boolean, showGameOver: boolean }> = ({showWinText, showGameOver}) => {
+const TextMessage: React.FC<{ showWinText: boolean, showGameOver: boolean }> = ({showWinText, showGameOver}) => {
 	return (<>{showWinText && <Text
 		text="You WIN!"
 		anchor={0.5}
@@ -29,4 +29,4 @@ const WinText: React.FC<{ showWinText: boolean, showGameOver: boolean }> = ({sho
 	</>)
 }
 
-export default WinText
+export default TextMessage

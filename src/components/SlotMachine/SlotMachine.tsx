@@ -15,10 +15,10 @@ import {initMachine} from "../../utils/initDataUtils";
 import LineRenderer from "./LineRenderer";
 import {fetchData, useSlotMachineGame} from "../../hooks/useSlotMachineGame";
 import BACKGROUND_IMAGE from "../../assets/background.png"
-import MessageText from "./WinText";
 import BetController from "./BetController";
 import {transposeRealData} from "../../utils/realLIneUtils";
 import {defaultData} from "../../api/mock";
+import TextMessage from "./TextMessage";
 
 const SlotMachine: React.FC = () => {
 	const [runGame, setRunGame] = useState<boolean>(false);
@@ -32,16 +32,6 @@ const SlotMachine: React.FC = () => {
 		stopped: machine[machine.length - 1].completelyStopped,
 		running: machine[machine.length - 1].running
 	})
-
-	useLayoutEffect(() => {
-		const init = async () => {
-			const data: IRollData = await fetchData(0);
-			setBetController(data);
-			const transformedData = transposeRealData(data.rolls);
-			await setRealData([...transformedData]);
-		}
-		init();
-	}, [])
 
 	const beginRoll = async (bet: number) => {
 		const data: IRollData = await fetchData(bet);
@@ -73,7 +63,7 @@ const SlotMachine: React.FC = () => {
 				anchor={0.5}
 			/>
 			{machine.map(slot => <LineRenderer line={slot} completelyStopped={gameStatus.stopped}/>)}
-			<MessageText showWinText={gameStatus.stopped && hasWin} showGameOver={!betController.balance}/>
+			<TextMessage showWinText={gameStatus.stopped && hasWin} showGameOver={betController.balance <= 0}/>
 		</Stage>
 		</div>
 		<BetController startGame={beginRoll} betController={betController} gameStatus={gameStatus}/>

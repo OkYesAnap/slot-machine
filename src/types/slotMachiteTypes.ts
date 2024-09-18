@@ -8,33 +8,38 @@ export interface ISlotImage {
 export type RealDataSlotsType = Array<Array<ISlotImage>>
 
 export interface IWinScheme {
-	x: number[],
-	y: number[],
-	xy: number[]
+	x: number[];
+	y: number[];
+	xy: number[];
 }
 
 export interface ILine {
-	slots: ISlotImage[],
-	realData: ISlotImage[],
-	running: boolean,
-	completelyStopped: boolean,
-	xPos: number,
-	yPos: number
+	slots: ISlotImage[];
+	realData: ISlotImage[];
+	running: boolean;
+	completelyStopped: boolean;
+	xPos: number;
+	yPos: number;
 }
 
 export type SlotMachineType = ILine[]
 
 export interface IRollData {
-	uid: number,
-	balance: number,
-	last_bet: number,
-	winLines: number,
-	win: number,
-	bets: number[],
-	rolls: number[][]
+	uid: number;
+	balance: number;
+	last_bet: number;
+	winLines: number;
+	win: number;
+	bets: number[];
+	rolls: number[][];
 }
 
 export interface IGameStatus {
-	running: boolean
-	stopped: boolean
+	running: boolean;
+	stopped: boolean;
+}
+
+export interface ITextMessage {
+	show: boolean;
+	text: string[];
 }

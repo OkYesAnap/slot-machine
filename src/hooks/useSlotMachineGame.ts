@@ -11,7 +11,7 @@ import {rollingLinesUpdater} from "../utils/rollingLinesUpdatedUtil";
 import {calcVerticalPosition} from "../utils/calcVerticalPositionUtil";
 import {dataClosure} from "../api/mock";
 
-export const fetchData = (bet:number) => {
+export const fetchData = (bet: number) => {
 	return new Promise<IRollData>((resolve, reject) => {
 		try {
 			const data = dataClosure(bet);
@@ -26,7 +26,7 @@ export const fetchData = (bet:number) => {
 export const useSlotMachineGame = (machine: SlotMachineType,
                                    setMachine: React.Dispatch<React.SetStateAction<SlotMachineType>>,
                                    realData: number[][]) => {
-	const  [hasWin, setHasWin] = useState(false);
+	const [hasWin, setHasWin] = useState(false);
 
 	const trueSlots = useMemo(() => {
 		const combinations = checkRealDataWinCombinations(realData);
