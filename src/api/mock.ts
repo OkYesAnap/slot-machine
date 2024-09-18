@@ -86,6 +86,7 @@ export const rollData = () => {
 		let rolls= slotMachineArray[i];
 		const combinations = checkRealDataWinCombinations(rolls)
 		const totalCombinations = totalWinCombinations(combinations);
+		if(data.balance - bet < 0) bet = data.balance;
 		const win = totalCombinations * WIN_MULTIPLIER * bet
 		let balance = data.balance - bet + win;
 		i++;

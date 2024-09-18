@@ -27,6 +27,7 @@ export const IMAGE_HEIGHT = 200;
 export const IMAGE_WIDTH = 170;
 export const ROLLING_SPEED = 25;
 export const ROLLING_WAIT_DELAY = 1500;
+export const BALANCE_CHANCE_ANIMATION_SPEED = 100;
 export const LINES = 3;
 export const WIN_ANIMATION_PARAMS = {
 	scale: 0.9,

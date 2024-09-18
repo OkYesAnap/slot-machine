@@ -1,8 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
 import { Button, InputNumber, Card } from 'antd';
-import {IGameStatus, IRollData} from "../../types/slotMachiteTypes";
+import {IBalanceAnimationParams, IGameStatus, IRollData} from "../../types/slotMachiteTypes";
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import './SlotMachine.css';
+import {BALANCE_CHANCE_ANIMATION_SPEED} from "../../constatns/slotMachineConstansts";
+import {balanceAnimation} from "../../utils/balanceAnimationUtils";
 
 interface IBetControllerProps {
 	startGame: (bet: number) => Promise<void>;
@@ -10,39 +12,11 @@ interface IBetControllerProps {
 	gameStatus: IGameStatus;
 }
 
-interface balanceAnimationParams {
-	value: number,
-	fontSize: string,
-	color: string,
-	step: number
-}
-
-const balanceAnimation = (props:balanceAnimationParams, balance: number): balanceAnimationParams => {
-	const {value, step} = props
-	console.log(balance);
-	if(props.value < balance){
-		return {...props,
-			value: value + step,
-			// color:"green"
-		}
-	}
-	if(props.value > balance){
-		return {...props,
-			value: value - step,
-			// color:"red"
-		}
-	}
-	return {...props,
-		color: "#FFF",
-		// fontSize:"24px"
-	};
-}
-
 const BetController: React.FC<IBetControllerProps> = ({startGame, betController, gameStatus}) => {
 	const {last_bet, bets, balance, win} = betController;
 	const [rollDisabled, setRollDisabled] = useState<boolean>(true);
 	const [bet, setBet] = useState<number>(last_bet);
-	const [balanceUi, setBalanceUi] = useState<balanceAnimationParams>({value: balance, fontSize: "20px", color: "#FFF", step: 10})
+	const [balanceUi, setBalanceUi] = useState<IBalanceAnimationParams>({value: balance, fontSize: "20px", color: "#FFF", step: 10})
 	const balanceRef = useRef<number>();
 
 	useEffect(() => {
@@ -60,7 +34,7 @@ const BetController: React.FC<IBetControllerProps> = ({startGame, betController,
 					}
 					return  balanceAnimation(prev, balanceRef.current || 0)
 				}))
-			}  , 100)
+			}  , BALANCE_CHANCE_ANIMATION_SPEED)
 		}
 	}, [gameStatus.stopped]);
 
@@ -73,7 +47,7 @@ const BetController: React.FC<IBetControllerProps> = ({startGame, betController,
 					if (prev.value === (balanceRef.current || 0) - win) clearInterval(interval);
 					return  balanceAnimation(prev, (balanceRef.current || 0) - win)
 				}))
-			}  , 100)
+			}  , BALANCE_CHANCE_ANIMATION_SPEED)
 		}
 	}, [gameStatus.running, win]);
 

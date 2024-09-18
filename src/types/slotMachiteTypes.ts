@@ -39,7 +39,9 @@ export interface IGameStatus {
 	stopped: boolean;
 }
 
-export interface ITextMessage {
-	show: boolean;
-	text: string[];
+export interface IBalanceAnimationParams {
+	value: number,
+	fontSize: string,
+	color: string,
+	step: number
 }

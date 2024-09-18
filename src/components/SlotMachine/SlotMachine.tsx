@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './SlotMachine.css';
 import {Sprite, Stage} from "@pixi/react";
 import {
@@ -23,9 +23,7 @@ import TextMessage from "./TextMessage";
 const SlotMachine: React.FC = () => {
 	const [runGame, setRunGame] = useState<boolean>(false);
 	const [machine, setMachine] = useState<SlotMachineType>(initMachine(LINES));
-
-	const [betController, setBetController] = useState<IRollData>({...defaultData});
-
+	const [betControllerData, setBetControllerData] = useState<IRollData>({...defaultData});
 	const [realData, setRealData] = useState<number[][]>([]);
 	const {startGame, hasWin} = useSlotMachineGame(machine, setMachine, realData);
 	const [gameStatus, setGameStatus] = useState<IGameStatus>({
@@ -35,7 +33,7 @@ const SlotMachine: React.FC = () => {
 
 	const beginRoll = async (bet: number) => {
 		const data: IRollData = await fetchData(bet);
-		setBetController(data);
+		setBetControllerData(data);
 		const transformedData = transposeRealData(data.rolls);
 		await setRealData([...transformedData]);
 		setRunGame(true)
@@ -63,10 +61,10 @@ const SlotMachine: React.FC = () => {
 				anchor={0.5}
 			/>
 			{machine.map(slot => <LineRenderer line={slot} completelyStopped={gameStatus.stopped}/>)}
-			<TextMessage showWinText={gameStatus.stopped && hasWin} showGameOver={betController.balance <= 0}/>
+			<TextMessage showText={gameStatus.stopped && hasWin || betControllerData.balance <= 0} betControllerData={betControllerData}/>
 		</Stage>
 		</div>
-		<BetController startGame={beginRoll} betController={betController} gameStatus={gameStatus}/>
+		<BetController startGame={beginRoll} betController={betControllerData} gameStatus={gameStatus}/>
 	</>)
 };
 
