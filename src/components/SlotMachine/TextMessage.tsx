@@ -1,5 +1,5 @@
 import {Text} from "@pixi/react";
-import {CANVAS_HEIGHT, CANVAS_WIDTH, WIN_MULTIPLIER} from "../../constatns/slotMachineConstansts";
+import {CANVAS_HEIGHT, CANVAS_WIDTH, WIN_MULTIPLIER} from "../../constants/slotMachineConstants";
 import React from "react";
 import {TextStyle} from "pixi.js";
 import {IRollData} from "../../types/slotMachiteTypes";

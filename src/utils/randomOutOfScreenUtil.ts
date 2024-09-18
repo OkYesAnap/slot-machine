@@ -1,5 +1,5 @@
 import {ISlotImage} from "../types/slotMachiteTypes";
-import {SLOTS_IMAGES} from "../constatns/slotMachineConstansts";
+import {SLOTS_IMAGES} from "../constants/slotMachineConstants";
 
 export const randomOutOfScreen = (imagesArr: ISlotImage[], randomFrom: number = 0, randomTo: number = 0): ISlotImage[] => {
 	const shuffledArr = [...imagesArr];

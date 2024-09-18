@@ -1,4 +1,4 @@
-import {IMAGE_WIDTH, LINES, SLOTS_IMAGES} from "../constatns/slotMachineConstansts";
+import {IMAGE_WIDTH, LINES, SLOTS_IMAGES} from "../constants/slotMachineConstants";
 import {ILine, SlotMachineType} from "../types/slotMachiteTypes";
 import {randomOutOfScreen} from "./randomOutOfScreenUtil";
 import {getRealLine, randomRealData} from "./realLIneUtils";

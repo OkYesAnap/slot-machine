@@ -10,7 +10,7 @@ import {
 	CANVAS_HEIGHT,
 	CANVAS_WIDTH,
 	LINES
-} from "../../constatns/slotMachineConstansts";
+} from "../../constants/slotMachineConstants";
 import {initMachine} from "../../utils/initDataUtils";
 import LineRenderer from "./LineRenderer";
 import {fetchData, useSlotMachineGame} from "../../hooks/useSlotMachineGame";
@@ -61,7 +61,7 @@ const SlotMachine: React.FC = () => {
 				anchor={0.5}
 			/>
 			{machine.map(slot => <LineRenderer line={slot} completelyStopped={gameStatus.stopped}/>)}
-			<TextMessage showText={gameStatus.stopped && hasWin || betControllerData.balance <= 0} betControllerData={betControllerData}/>
+			<TextMessage showText={(gameStatus.stopped && hasWin) || (betControllerData.balance <= 0)} betControllerData={betControllerData}/>
 		</Stage>
 		</div>
 		<BetController startGame={beginRoll} betController={betControllerData} gameStatus={gameStatus}/>

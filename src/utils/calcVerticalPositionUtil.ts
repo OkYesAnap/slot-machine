@@ -1,5 +1,5 @@
 import {ILine} from "../types/slotMachiteTypes";
-import {IMAGE_HEIGHT, ROLLING_SPEED} from "../constatns/slotMachineConstansts";
+import {IMAGE_HEIGHT, ROLLING_SPEED} from "../constants/slotMachineConstants";
 
 export const calcVerticalPosition = (line: ILine): { yPos: number, completelyStopped: boolean } => {
 	const {yPos, running, slots, realData} = line

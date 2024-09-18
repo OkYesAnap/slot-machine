@@ -1,6 +1,6 @@
 import {IRollData, SlotMachineType} from "../types/slotMachiteTypes";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {ROLLING_WAIT_DELAY, SLOTS_IMAGES} from "../constatns/slotMachineConstansts";
+import {ROLLING_WAIT_DELAY, SLOTS_IMAGES} from "../constants/slotMachineConstants";
 import {
 	checkRealDataWinCombinations,
 	getRealLines,

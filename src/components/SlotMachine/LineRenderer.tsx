@@ -5,7 +5,7 @@ import {
 	IMAGE_HEIGHT,
 	IMAGE_WIDTH,
 	WIN_ANIMATION_PARAMS
-} from "../../constatns/slotMachineConstansts";
+} from "../../constants/slotMachineConstants";
 import {calcWinAnimation, IWinAnimationParams} from "../../utils/calcWinAnimationUtil";
 
 export interface LineRendererProps {

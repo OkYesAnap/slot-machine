@@ -3,7 +3,7 @@ import { Button, InputNumber, Card } from 'antd';
 import {IBalanceAnimationParams, IGameStatus, IRollData} from "../../types/slotMachiteTypes";
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import './SlotMachine.css';
-import {BALANCE_CHANCE_ANIMATION_SPEED} from "../../constatns/slotMachineConstansts";
+import {BALANCE_CHANCE_ANIMATION_SPEED} from "../../constants/slotMachineConstants";
 import {balanceAnimation} from "../../utils/balanceAnimationUtils";
 
 interface IBetControllerProps {
@@ -70,9 +70,9 @@ const BetController: React.FC<IBetControllerProps> = ({startGame, betController,
 		<Card className="card" bodyStyle={{ padding: "0 20px" }}>
 			<div className="flex-container">
 				<div className="balance-text">
-					Your balance:&nbsp;
-					<span style={{color: balanceUi.color, fontSize:balanceUi.fontSize}} className="balance-value">{balanceUi.value}</span>
-					&nbsp;&nbsp;&nbsp;&nbsp;BET
+					Your balance:
+					<span style={{color: balanceUi.color, fontSize:balanceUi.fontSize}}>{balanceUi.value}</span>
+					BET
 				</div>
 					<InputNumber
 						className="input-number"

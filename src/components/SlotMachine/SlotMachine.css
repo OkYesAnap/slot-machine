@@ -25,6 +25,11 @@
     font-size: 24px;
     font-weight: bolder;
 }
+.balance-text span {
+    padding-right: 10px;
+    width: 50px;
+    display: inline-block;
+}
 
 .input-container {
     text-align: center;

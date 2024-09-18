@@ -1,5 +1,5 @@
 import {ISlotImage, IWinScheme, RealDataSlotsType} from "../types/slotMachiteTypes";
-import {SLOTS_IMAGES} from "../constatns/slotMachineConstansts";
+import {SLOTS_IMAGES} from "../constants/slotMachineConstants";
 
 export const randomRealData = (length: number, maxId: number = 8) => {
 	const randomData = [];
@@ -79,4 +79,12 @@ export const totalWinCombinations = (winCombinations:IWinScheme | null): number 
 	return Object.values(winCombinations || {}).reduce((accumulator, currentArray) => {
 		return accumulator + currentArray.length;
 	}, 0);
+}
+
+export const randomRoll = (length: number):number[][] => {
+	const randomData = [];
+	for (let i = 0; i < length; i++) {
+		randomData.push(randomRealData(length));
+	}
+	return randomData;
 }

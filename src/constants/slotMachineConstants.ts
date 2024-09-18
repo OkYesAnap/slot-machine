@@ -9,6 +9,11 @@ import image7 from "../assets/slot-7.png";
 import image8 from "../assets/slot-8.png";
 import image9 from "../assets/slot-9.png";
 
+
+////////////////////////////////////////////////////////////////////////////
+export const RANDOM_GAME = false //set this parameter to true to play a random game
+////////////////////////////////////////////////////////////////////////////
+
 export const SLOTS_IMAGES: ISlotImage[] = [
 	{id: 1, image: image1},
 	{id: 2, image: image2},
@@ -27,7 +32,7 @@ export const IMAGE_HEIGHT = 200;
 export const IMAGE_WIDTH = 170;
 export const ROLLING_SPEED = 25;
 export const ROLLING_WAIT_DELAY = 1500;
-export const BALANCE_CHANCE_ANIMATION_SPEED = 100;
+export const BALANCE_CHANCE_ANIMATION_SPEED = 25;
 export const LINES = 3;
 export const WIN_ANIMATION_PARAMS = {
 	scale: 0.9,

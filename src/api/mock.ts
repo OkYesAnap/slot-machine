@@ -1,8 +1,13 @@
-import {checkRealDataWinCombinations, totalWinCombinations, transposeRealData} from "../utils/realLIneUtils";
-import {WIN_MULTIPLIER} from "../constatns/slotMachineConstansts";
+import {
+	checkRealDataWinCombinations,
+	randomRoll,
+	totalWinCombinations,
+	transposeRealData
+} from "../utils/realLIneUtils";
+import {RANDOM_GAME, WIN_MULTIPLIER} from "../constants/slotMachineConstants";
 import {IRollData} from "../types/slotMachiteTypes";
 
-const slotMachineArray = [
+const slotMockedData = [
 	[
 		[8, 3, 1],
 		[9, 9, 4],
@@ -15,13 +20,13 @@ const slotMachineArray = [
 	],
 	[
 		[9, 1, 7],
-		[3, 3, 7],
+		[3, 3, 4],
 		[6, 7, 7]
 	],
 	[
-		[5, 5, 2],
-		[1, 9, 1],
-		[7, 8, 6]
+		[5, 1, 2],
+		[1, 1, 1],
+		[7, 1, 6]
 	],
 	[
 		[6, 4, 6],
@@ -30,7 +35,7 @@ const slotMachineArray = [
 	],
 	[
 		[6, 2, 2],
-		[9, 9, 9],
+		[9, 6, 9],
 		[5, 5, 5]
 	],
 	[
@@ -46,18 +51,18 @@ const slotMachineArray = [
 	[
 		[9, 2, 8],
 		[3, 4, 3],
-		[1, 1, 1]
+		[1, 5, 1]
 	],
 	[
-		[9, 3, 7],
-		[8, 5, 8],
-		[2, 6, 4]
+		[7, 7, 7],
+		[7, 7, 7],
+		[7, 7, 7]
 	]
 ];
 
 const currentUrl = window.location.href;
 const url = new URL(currentUrl);
-const uid = url.searchParams.get('uid') || 10;
+const uid = url.searchParams.get('uid') || 0;
 
 const defaultDataInit = (): IRollData => {
 	const user = localStorage.getItem(`uid-${uid}`);
@@ -83,14 +88,14 @@ export const rollData = () => {
 	let data = defaultData;
 	return (bet: number): IRollData => {
 		if (data.balance <= 0) return data;
-		let rolls= slotMachineArray[i];
+		let rolls = RANDOM_GAME ? randomRoll (3) : slotMockedData[i];
 		const combinations = checkRealDataWinCombinations(rolls)
 		const totalCombinations = totalWinCombinations(combinations);
 		if(data.balance - bet < 0) bet = data.balance;
 		const win = totalCombinations * WIN_MULTIPLIER * bet
 		let balance = data.balance - bet + win;
 		i++;
-		if (i === slotMachineArray.length - 1) i = 0;
+		if (i === slotMockedData.length - 1) i = 0;
 		data = {
 			...data,
 			rolls: [...rolls],
