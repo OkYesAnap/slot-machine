@@ -37,6 +37,7 @@ export interface IRollData {
 export interface IGameStatus {
 	running: boolean;
 	stopped: boolean;
+	random: boolean;
 }
 
 export interface IBalanceAnimationParams {

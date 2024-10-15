@@ -3,20 +3,21 @@ import { Button, InputNumber, Card } from 'antd';
 import {IBalanceAnimationParams, IGameStatus, IRollData} from "../../types/slotMachiteTypes";
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import './SlotMachine.css';
-import {BALANCE_CHANCE_ANIMATION_SPEED} from "../../constants/slotMachineConstants";
+import {BALANCE_CHANGE_ANIMATION_SPEED, BALANCE_CHANGE_ANIMATION_STEP} from "../../constants/slotMachineConstants";
 import {balanceAnimation} from "../../utils/balanceAnimationUtils";
 
 interface IBetControllerProps {
 	startGame: (bet: number) => Promise<void>;
 	betController: IRollData;
 	gameStatus: IGameStatus;
+	randomSwitcher: () => void;
 }
 
-const BetController: React.FC<IBetControllerProps> = ({startGame, betController, gameStatus}) => {
+const BetController: React.FC<IBetControllerProps> = ({startGame, betController, gameStatus, randomSwitcher}) => {
 	const {last_bet, bets, balance, win} = betController;
 	const [rollDisabled, setRollDisabled] = useState<boolean>(true);
 	const [bet, setBet] = useState<number>(last_bet);
-	const [balanceUi, setBalanceUi] = useState<IBalanceAnimationParams>({value: balance, fontSize: "20px", color: "#FFF", step: 10})
+	const [balanceUi, setBalanceUi] = useState<IBalanceAnimationParams>({value: balance, fontSize: "20px", color: "#FFF", step: BALANCE_CHANGE_ANIMATION_STEP})
 	const balanceRef = useRef<number>();
 
 	useEffect(() => {
@@ -34,7 +35,7 @@ const BetController: React.FC<IBetControllerProps> = ({startGame, betController,
 					}
 					return  balanceAnimation(prev, balanceRef.current || 0)
 				}))
-			}  , BALANCE_CHANCE_ANIMATION_SPEED)
+			}  , BALANCE_CHANGE_ANIMATION_SPEED)
 		}
 	}, [gameStatus.stopped]);
 
@@ -47,7 +48,7 @@ const BetController: React.FC<IBetControllerProps> = ({startGame, betController,
 					if (prev.value === (balanceRef.current || 0) - win) clearInterval(interval);
 					return  balanceAnimation(prev, (balanceRef.current || 0) - win)
 				}))
-			}  , BALANCE_CHANCE_ANIMATION_SPEED)
+			}  , BALANCE_CHANGE_ANIMATION_SPEED)
 		}
 	}, [gameStatus.running, win]);
 
@@ -69,8 +70,14 @@ const BetController: React.FC<IBetControllerProps> = ({startGame, betController,
 	return (
 		<Card className="card" bodyStyle={{ padding: "0 20px" }}>
 			<div className="flex-container">
+				<Button
+					disabled={rollDisabled || !balance}
+					onClick={randomSwitcher}
+				>
+					{gameStatus.random ? "Random" : "Mock"}
+				</Button>
 				<div className="balance-text">
-					Your balance:
+					Balance:
 					<span style={{color: balanceUi.color, fontSize:balanceUi.fontSize}}>{balanceUi.value}</span>
 					BET
 				</div>

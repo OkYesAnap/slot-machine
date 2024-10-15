@@ -11,10 +11,10 @@ import {rollingLinesUpdater} from "../utils/rollingLinesUpdatedUtil";
 import {calcVerticalPosition} from "../utils/calcVerticalPositionUtil";
 import {dataClosure} from "../api/mock";
 
-export const fetchData = (bet: number) => {
+export const fetchData = (bet: number, random: boolean) => {
 	return new Promise<IRollData>((resolve, reject) => {
 		try {
-			const data = dataClosure(bet);
+			const data = dataClosure(bet, random);
 			resolve(data);
 		} catch (error) {
 			reject(new Error("Failed to fetch data"));

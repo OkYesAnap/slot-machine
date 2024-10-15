@@ -9,7 +9,7 @@ import {
 import {
 	CANVAS_HEIGHT,
 	CANVAS_WIDTH,
-	LINES
+	LINES, RANDOM_GAME
 } from "../../constants/slotMachineConstants";
 import {initMachine} from "../../utils/initDataUtils";
 import LineRenderer from "./LineRenderer";
@@ -22,17 +22,22 @@ import TextMessage from "./TextMessage";
 
 const SlotMachine: React.FC = () => {
 	const [runGame, setRunGame] = useState<boolean>(false);
-	const [machine, setMachine] = useState<SlotMachineType>(initMachine(LINES));
+ 	const [machine, setMachine] = useState<SlotMachineType>(initMachine(LINES));
 	const [betControllerData, setBetControllerData] = useState<IRollData>({...defaultData});
 	const [realData, setRealData] = useState<number[][]>([]);
 	const {startGame, hasWin} = useSlotMachineGame(machine, setMachine, realData);
 	const [gameStatus, setGameStatus] = useState<IGameStatus>({
 		stopped: machine[machine.length - 1].completelyStopped,
-		running: machine[machine.length - 1].running
+		running: machine[machine.length - 1].running,
+		random: RANDOM_GAME
 	})
 
+	const randomSwitcher = () => {
+		setGameStatus({...gameStatus, random: !gameStatus.random})
+	}
+
 	const beginRoll = async (bet: number) => {
-		const data: IRollData = await fetchData(bet);
+		const data: IRollData = await fetchData(bet, gameStatus.random);
 		setBetControllerData(data);
 		const transformedData = transposeRealData(data.rolls);
 		await setRealData([...transformedData]);
@@ -64,7 +69,7 @@ const SlotMachine: React.FC = () => {
 			<TextMessage showText={(gameStatus.stopped && hasWin) || (betControllerData.balance <= 0)} betControllerData={betControllerData}/>
 		</Stage>
 		</div>
-		<BetController startGame={beginRoll} betController={betControllerData} gameStatus={gameStatus}/>
+		<BetController startGame={beginRoll} betController={betControllerData} gameStatus={gameStatus} randomSwitcher={randomSwitcher}/>
 	</>)
 };
 
