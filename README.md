@@ -1,13 +1,11 @@
-## use https://okyesanap.github.io/slot-machine/?uid=100 
-### or any other uid, if empty - default uid=0
-## in `src/constants/slotMachineConstants.ts`
-### set `RANDOM_GAME = true/false`
-### to change the random game or mock data
-## in `src/api/mock.ts`
-### when `RANDOM_GAME - false` you also can change mock data manually by changing data in `const slotMockedData`
+### Push button 
+# `Mock/Random`
+### to change the random or mocked spin data
+###
+#### use https://okyesanap.github.io/slot-machine/?uid=100 
+#### or any other uid, if empty - default uid=0
 # Getting Started with React
 ### `npm install`
 ### `npm start`
-#Test
+# Test
 ### `npm test`
-
